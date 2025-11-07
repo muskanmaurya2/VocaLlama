@@ -1,0 +1,396 @@
+<!-- it is frontend for main.py -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Query Interface - Animated Blue</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- THEME: WHITE & BLUE "ANIMATED" --- */
+        :root {
+            --bg-lightest: #ffffff;
+            --bg-light: #f0f8ff; /* Very light blue */
+            --bg-gradient-end: #d6e8ff; /* Soft blue */
+            --text-primary: #0a2540; /* Dark blue */
+            --text-secondary: #525f7f; /* Grayish blue */
+            --border-color: #e6ebf1;
+            --accent-blue: #007bff; /* Bright, strong blue */
+            --accent-blue-dark: #0056b3; /* The dark blue you wanted */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            
+            /* --- THIS IS THE UPDATED GRADIENT --- */
+            /* 1. New 5-stop gradient for a seamless loop */
+            background-image: linear-gradient(135deg, 
+                var(--bg-lightest) 0%, 
+                var(--bg-gradient-end) 25%, 
+                var(--accent-blue-dark) 50%,  /* <-- Added the dark blue */
+                var(--bg-gradient-end) 75%,
+                var(--bg-lightest) 100%);
+            /* 2. Set the background size to be huge */
+            background-size: 400% 400%;
+            /* 3. Apply the animation */
+            animation: moveGradient 15s ease infinite;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background-color: var(--bg-lightest);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(10, 37, 64, 0.1);
+            padding: 30px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-top: 0;
+            font-weight: 700;
+            font-size: 2.2rem;
+            background: linear-gradient(45deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+
+        h2 {
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-top: 0;
+            font-weight: 600;
+        }
+        
+        .upload-section {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .upload-section h2 { 
+            border-bottom: none; 
+            padding-bottom: 10px; 
+            margin-bottom: 10px;
+            font-size: 1.5rem; 
+        }
+
+        .upload-area { display: flex; gap: 10px; align-items: center; }
+        .upload-btn {
+            padding: 12px 20px;
+            background-color: var(--accent-blue);
+            color: var(--bg-lightest);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .upload-btn:hover { 
+            background-color: var(--accent-blue-dark);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+        }
+
+        #file-name { font-style: italic; color: var(--text-secondary); }
+        .status-message { margin-top: 15px; font-weight: 600; }
+        .status-message.success { color: var(--accent-blue-dark); }
+        .status-message.error { color: #d9534f; }
+        .status-message.processing { color: #f0ad4e; }
+
+        #query-form { display: flex; margin-bottom: 25px; gap: 10px; }
+        #query-form fieldset { border: none; padding: 0; margin: 0; display: contents; }
+        #query-form fieldset:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        #question-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            background-color: var(--bg-lightest);
+            color: var(--text-primary);
+        }
+        #question-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+        }
+        
+        #query-form button {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            color: var(--bg-lightest);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        #query-form button[type="submit"] {
+            background-image: linear-gradient(45deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+        }
+        #query-form button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .icon-btn {
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-light);
+            color: var(--text-secondary);
+        }
+        .icon-btn:hover {
+            background-color: #e6ebf1;
+            border-color: var(--accent-blue);
+        }
+
+        .answer-header { display: flex; justify-content: space-between; align-items: center; }
+        .answer-header h2 { 
+            border-bottom: none; 
+            font-size: 1.5rem;
+        }
+
+        #answer-display {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+            min-height: 100px;
+            white-space: pre-wrap;
+            font-family: 'Roboto Mono', monospace;
+            line-height: 1.6;
+            margin-top: 15px;
+            color: var(--text-primary);
+        }
+
+        #loading {
+            display: none;
+            color: var(--text-secondary);
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* This is the animation definition (unchanged) */
+        @keyframes moveGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Keep the keyframes for the spinner */
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+
+        .model-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="main-title">Ask Your PDF</h1>
+        
+        <div class="upload-section">
+            <h2>1. Upload a Document</h2>
+            <div class="upload-area">
+                <input type="file" id="pdf-upload" accept="application/pdf" hidden>
+                <label for="pdf-upload" class="upload-btn">Choose PDF</label>
+                <span id="file-name">No file selected</span>
+            </div>
+            <p id="upload-status" class="status-message"></p>
+        </div>
+
+        <form id="query-form">
+            <fieldset id="query-fieldset" disabled>
+                <input type="text" id="question-input" placeholder="2. Ask a question about your PDF..." required>
+                <button type="button" id="start-speech-btn" class="icon-btn" title="Ask with voice">🎤</button>
+                <button type="submit">Ask</button>
+            </fieldset>
+        </form>
+
+        <div id="results">
+            <div class="answer-header">
+                <h2>Answer</h2>
+                <button type="button" id="speak-answer-btn" class="icon-btn" title="Read answer aloud">🔊</button>
+            </div>
+            <div id="loading"><div class="spinner"></div>Thinking...</div>
+            <div id="answer-display">Upload a PDF to get started...</div>
+        </div>
+
+        <div class="model-footer">
+            <span>Model: llama-2-7b-langchain-chat</span>
+        </div>
+    </div>
+
+    <script>
+        // --- Get All DOM Elements ---
+        const pdfUpload = document.getElementById('pdf-upload');
+        const fileNameSpan = document.getElementById('file-name');
+        const uploadStatus = document.getElementById('upload-status');
+        const queryForm = document.getElementById('query-form');
+        const queryFieldset = document.getElementById('query-fieldset');
+        const questionInput = document.getElementById('question-input');
+        const answerDisplay = document.getElementById('answer-display');
+        const loadingIndicator = document.getElementById('loading');
+        const speechBtn = document.getElementById('start-speech-btn');
+        const speakBtn = document.getElementById('speak-answer-btn');
+        const mainTitle = document.getElementById('main-title');
+
+        // --- File Upload Logic ---
+        pdfUpload.addEventListener('change', async function(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            fileNameSpan.textContent = file.name;
+            uploadStatus.textContent = 'Processing... (This can take a minute)';
+            uploadStatus.className = 'status-message processing';
+            queryFieldset.disabled = true; 
+            mainTitle.textContent = 'Processing PDF...';
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Upload failed');
+                }
+
+                uploadStatus.textContent = data.message;
+                uploadStatus.className = 'status-message success';
+                queryFieldset.disabled = false;
+                answerDisplay.innerText = 'PDF processed. You can now ask questions.';
+                mainTitle.textContent = `Querying: ${file.name}`;
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                uploadStatus.textContent = `Error: ${error.message}`;
+                uploadStatus.className = 'status-message error';
+                mainTitle.textContent = 'Upload Failed';
+            }
+        });
+
+        // --- Query Submission Logic ---
+        queryForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const question = questionInput.value;
+            if (!question) return;
+
+            loadingIndicator.style.display = 'flex';
+            answerDisplay.style.display = 'none';
+            if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+
+            try {
+                const response = await fetch('/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question })
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || data.detail || 'Query failed');
+                }
+                
+                answerDisplay.innerText = data.answer;
+
+            } catch (error) {
+                console.error('Query error:', error);
+                answerDisplay.innerText = `Error: ${error.message}`;
+            } finally {
+                loadingIndicator.style.display = 'none';
+                answerDisplay.style.display = 'block';
+            }
+        });
+
+        // --- Web Speech API Logic ---
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const synthesis = window.speechSynthesis;
+        let femaleVoice = null;
+
+        function loadFemaleVoice() {
+            const voices = synthesis.getVoices();
+            femaleVoice = voices.find(v => v.name === 'Google US English' && v.lang.includes('en')) ||
+                          voices.find(v => v.lang.includes('en') && (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Susan')));
+        }
+
+        if (!SpeechRecognition || !synthesis) {
+            console.warn("Web Speech API not supported.");
+            speechBtn.style.display = 'none';
+            speakBtn.style.display = 'none';
+        } else {
+            synthesis.onvoiceschanged = loadFemaleVoice;
+            loadFemaleVoice();
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+
+            speechBtn.addEventListener('click', () => {
+                try {
+                    recognition.start();
+                    speechBtn.textContent = '...';
+                    speechBtn.disabled = true;
+                } catch(e) { /* ignore */ }
+            });
+            recognition.onresult = (event) => questionInput.value = event.results[0][0].transcript;
+            recognition.onend = () => {
+                speechBtn.textContent = '🎤';
+                speechBtn.disabled = false;
+            };
+
+            speakBtn.addEventListener('click', () => {
+                const text = answerDisplay.innerText;
+                if (text && text !== '...' && !text.startsWith('Upload')) {
+                    if (synthesis.speaking) synthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    if (femaleVoice) utterance.voice = femaleVoice;
+                    synthesis.speak(utterance);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

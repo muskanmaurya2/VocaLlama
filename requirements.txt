@@ -1,0 +1,11 @@
+
+fastapi
+uvicorn[standard]
+langchain
+langchain-community
+langchain-experimental
+pdfplumber
+sentence-transformers
+faiss-cpu
+openai
+langchain-huggingface  
