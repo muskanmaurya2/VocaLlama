@@ -1,4 +1,4 @@
-# 🦙 VocaLlama
+# 🦙 VocaLlama | Infosys Springboard Internship
 
 🎙️ **Talk to Your PDFs with a Local-First Voice AI**
 
